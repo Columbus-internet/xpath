@@ -434,7 +434,7 @@ func substringFunc(arg1, arg2, arg3 query) func(query, iterator) interface{} {
 		}
 
 		var start, length float64
-		var ok bool
+		var ok, substringLengthExists bool
 
 		if start, ok = functionArgs(arg2).Evaluate(t).(float64); !ok {
 			panic(errors.New("substring() function first argument type must be int"))
@@ -443,6 +443,7 @@ func substringFunc(arg1, arg2, arg3 query) func(query, iterator) interface{} {
 		}
 		start--
 		if arg3 != nil {
+			substringLengthExists = true
 			if length, ok = functionArgs(arg3).Evaluate(t).(float64); !ok {
 				panic(errors.New("substring() function second argument type must be int"))
 			}
@@ -453,6 +454,13 @@ func substringFunc(arg1, arg2, arg3 query) func(query, iterator) interface{} {
 		if length > 0 {
 			return m[int(start):int(length+start)]
 		}
+
+		if substringLengthExists {
+			// optional length was passed to the function but length <=0
+			return ""
+		}
+
+		// optional length arg was not passed at all, need to return full string
 		return m[int(start):]
 	}
 }
