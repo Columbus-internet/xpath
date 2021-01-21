@@ -88,6 +88,10 @@ func cmpBooleanBooleanF(op string, a, b bool) bool {
 		return a || b
 	case "and":
 		return a && b
+	case "=":
+		return a == b
+	case "!-":
+		return a != b
 	}
 	return false
 }
