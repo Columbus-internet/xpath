@@ -120,6 +120,11 @@ func asNumber(t iterator, o interface{}) float64 {
 		}
 	case float64:
 		return typ
+	case bool:
+		if o.(bool) {
+			return 1
+		}
+		return 0
 	case string:
 		v, err := strconv.ParseFloat(typ, 64)
 		if err != nil {
@@ -518,6 +523,8 @@ func stringLengthFunc(arg1 query) func(query, iterator) interface{} {
 				break
 			}
 			return float64(len(node.Value()))
+		default:
+			return float64(len(asString(t, v)))
 		}
 		return float64(0)
 	}
@@ -562,7 +569,7 @@ func notFunc(q query, t iterator) interface{} {
 		node := v.Select(t)
 		return node == nil
 	default:
-		return false
+		return !asBool(t, v)
 	}
 }
 
@@ -583,6 +590,8 @@ func concatFunc(args ...query) func(query, iterator) interface{} {
 				if node != nil {
 					b.WriteString(node.Value())
 				}
+			default:
+				b.WriteString(asString(t, v))
 			}
 		}
 		result := b.String()
