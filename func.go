@@ -427,6 +427,7 @@ func normalizespaceFunc(q query, t iterator) interface{} {
 func substringFunc(arg1, arg2, arg3 query) func(query, iterator) interface{} {
 	return func(q query, t iterator) interface{} {
 		var m string
+		t.Current().Reset()
 		switch typ := functionArgs(arg1).Evaluate(t).(type) {
 		case string:
 			m = typ
@@ -441,6 +442,7 @@ func substringFunc(arg1, arg2, arg3 query) func(query, iterator) interface{} {
 		var start, length float64
 		var ok, substringLengthExists bool
 
+		t.Current().Reset()
 		if start, ok = functionArgs(arg2).Evaluate(t).(float64); !ok {
 			panic(errors.New("substring() function first argument type must be int"))
 		} else if start < 1 {
@@ -449,6 +451,7 @@ func substringFunc(arg1, arg2, arg3 query) func(query, iterator) interface{} {
 		start--
 		if arg3 != nil {
 			substringLengthExists = true
+			t.Current().Reset()
 			if length, ok = functionArgs(arg3).Evaluate(t).(float64); !ok {
 				panic(errors.New("substring() function second argument type must be int"))
 			}

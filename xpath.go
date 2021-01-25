@@ -48,6 +48,15 @@ type NodeNavigator interface {
 	// MoveToRoot moves the NodeNavigator to the root node of the current node.
 	MoveToRoot()
 
+	// Reset moves the NodeNavigator to the 'local original' node.
+	Reset()
+
+	// Reset 'local original' to 'original',  moves the NodeNavigator to the original node.
+	ResetToOriginal()
+
+	// SetCurrentAsOriginal set 'local original' == current
+	SetCurrentAsOriginal()
+
 	// MoveToParent moves the NodeNavigator to the parent node of the current node.
 	MoveToParent() bool
 
@@ -118,7 +127,10 @@ func (f iteratorFunc) Current() NodeNavigator {
 // Evaluate returns the result of the expression.
 // The result type of the expression is one of the follow: bool,float64,string,NodeIterator).
 func (expr *Expr) Evaluate(root NodeNavigator) interface{} {
-	val := expr.q.Evaluate(iteratorFunc(func() NodeNavigator { return root }))
+	val := expr.q.Evaluate(iteratorFunc(
+		func() NodeNavigator {
+			return root
+		}))
 	switch val.(type) {
 	case query:
 		return &NodeIterator{query: expr.q.Clone(), node: root}

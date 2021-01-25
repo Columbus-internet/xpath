@@ -465,8 +465,8 @@ func (n *TNode) Value() string {
 
 // TNodeNavigator is for navigating TNode.
 type TNodeNavigator struct {
-	curr, root *TNode
-	attr       int
+	curr, root, orig *TNode
+	attr             int
 }
 
 func (n *TNodeNavigator) NodeType() NodeType {
@@ -516,7 +516,21 @@ func (n *TNodeNavigator) Copy() NodeNavigator {
 }
 
 func (n *TNodeNavigator) MoveToRoot() {
-	n.curr = n.root
+	for n.MoveToParent() {
+
+	}
+}
+
+func (n *TNodeNavigator) Reset() {
+	n.curr = n.orig
+}
+
+func (n *TNodeNavigator) SetCurrentAsOriginal() {
+
+}
+
+func (n *TNodeNavigator) ResetToOriginal() {
+
 }
 
 func (n *TNodeNavigator) MoveToParent() bool {

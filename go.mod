@@ -1,3 +1,3 @@
-module github.com/antchfx/xpath
+module github.com/Columbus-internet/xpath
 
 go 1.14
